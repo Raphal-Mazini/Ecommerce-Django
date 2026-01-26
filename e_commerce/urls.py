@@ -35,7 +35,7 @@ urlpatterns = [
         path('products-fbv/', product_detail_view), 
         path('products/<slug:slug>/', ProductDetailSlugView.as_view()),
         path('products/', include("products.urls")),
-        path('admin/', admin.site.urls)
+        path('admin/', admin.site.urls),
         ]
 
 if settings.DEBUG:
