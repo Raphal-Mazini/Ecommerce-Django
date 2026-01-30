@@ -9,5 +9,6 @@
         <h5 class="card-title">{{ instance.title }}</h5>
             <p class="card-text">Um breve exemplo de texto para complementar o título do cartão e compor a maior parte do seu conteúdo.</p>
         <a href="{{ instance.get_absolute_url }}" class="btn btn-primary">Detalhe</a>
+        <a href="{% url 'detail' slug=instance.slug %}" class="btn btn-warning">Atalho para a URL</a>
     </div>
 </div>
