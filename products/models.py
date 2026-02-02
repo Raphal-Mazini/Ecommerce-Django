@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.db import models
 from .utils import unique_slug_generator
 from django.db.models.signals import pre_save
@@ -5,11 +6,18 @@ from django.urls import reverse
 
 #Custom queryset
 class ProductQuerySet(models.query.QuerySet):
+    
     def active(self):
         return self.filter(active = True)
 
     def featured(self):
         return self.filter(featured = True, active = True)
+
+    def search(self, query):
+        lookups = (Q(title__contains = query) | 
+                   Q(description__contains = query) | 
+                   Q(price__contains = query))
+        return self.filter(lookups).distinct()
 
 class ProductManager(models.Manager):
     
@@ -20,7 +28,7 @@ class ProductManager(models.Manager):
         return self.get_queryset().active()
 
     def featured(self):
-        #return self.get_queryset().filter(featured = True)
+        #self.get_queryset().filter(featured = True)
         return self.get_queryset().featured()
 
     def get_by_id(self, id):
@@ -28,6 +36,9 @@ class ProductManager(models.Manager):
         if qs.count() == 1:
             return qs.first()
         return None
+
+    def search(self, query):
+        return self.get_queryset().active().search(query)
 
 # Create your models here.
 class Product(models.Model): #product_category
@@ -40,9 +51,9 @@ class Product(models.Model): #product_category
     active      = models.BooleanField(default = True)
     timestamp   = models.DateTimeField(auto_now_add = True)
 
+
     objects = ProductManager()
-    
-    
+
     def get_absolute_url(self):
         #return "/products/{slug}/".format(slug = self.slug)
         return reverse("products:detail", kwargs={"slug": self.slug})
@@ -50,6 +61,7 @@ class Product(models.Model): #product_category
     #python 3
     def __str__(self):
         return self.title
+        
     #python 2
     def __unicode__(self):
         return self.title
