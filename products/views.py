@@ -1,11 +1,9 @@
-
 from django.http import Http404
 
 from django.views.generic import ListView, DetailView
 from django.shortcuts import render, get_object_or_404
 
 from carts.models import Cart
-
 from .models import Product
 
 class ProductFeaturedListView(ListView):
@@ -30,7 +28,6 @@ class ProductListView(ListView):
     #     print(context)
     #     return context
 
-
 #Function Based View
 def product_list_view(request):
     queryset = Product.objects.all()
@@ -42,7 +39,7 @@ def product_list_view(request):
 class ProductDetailSlugView(DetailView):
     queryset = Product.objects.all()
     template_name = "products/detail.html"
-    
+
     def get_context_data(self, *args, **kwargs):
         context = super(ProductDetailSlugView,  self).get_context_data(*args, **kwargs)
         cart_obj, new_obj = Cart.objects.new_or_get(self.request)
@@ -62,10 +59,7 @@ class ProductDetailSlugView(DetailView):
         return instance
 
 #Class Based View
-
-
 class ProductDetailView(DetailView):
-    
     template_name = "products/detail.html"
 
     def get_context_data(self, *args, **kwargs):
@@ -79,7 +73,6 @@ class ProductDetailView(DetailView):
         if instance is None:
             raise Http404("Esse produto não existe!")
         return instance
-
 
 #Function Based View
 def product_detail_view(request, pk = None, *args, **kwargs):
